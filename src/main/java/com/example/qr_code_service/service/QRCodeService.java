@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class QRCodeService {
-    private static List<String> imageFormats = List.of("jpeg", "png", "gif");
+    private static List<String> imageFormats = List.of("jpeg", "png", "gif","jpg");
 
     public byte[] getImage(int size, String type) throws IllegalArgumentException, IOException {
         if (size < 150 || size > 350)
@@ -25,7 +25,7 @@ public class QRCodeService {
             g.setColor(Color.WHITE);//it's like picking up a white paint brush
             g.fillRect(0, 0, size, size);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-             ImageIO.write(image, "png", byteArrayOutputStream);//writes the image to the byteArrayOutuptStream
+            ImageIO.write(image, type, byteArrayOutputStream);//writes the image to the byteArrayOutuptStream
             //rather than saving it to a file in the specified format
             byte[] bytes = byteArrayOutputStream.toByteArray();//serialize this image to send over the network
             return bytes;
@@ -35,5 +35,7 @@ public class QRCodeService {
 
     }
 
-
 }
+
+
+

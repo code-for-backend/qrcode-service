@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 //Code tested and working
 @RestController
@@ -26,7 +27,8 @@ public class QrCodeController {
     }
 
     @GetMapping("/api/qrcode")
-    public ResponseEntity<byte[]> qrCode(@RequestParam int size,@RequestParam String type) {
+    public ResponseEntity<?> qrCode(@RequestParam int size,@RequestParam String type) {
+        //Response<Entity<byte[]> not used so as to simplify error handling
         try {
             byte[] bytes=qrCodeService.getImage(size,type);
             String contentType="image/"+type;// example for content-type:image/png
@@ -35,14 +37,17 @@ public class QrCodeController {
         }
         catch(IOException e)//line 32
             {
-               // String errorMsg = "Some error occured in generating the image";
-                return ResponseEntity.status(500).contentType(MediaType.TEXT_PLAIN).body(e.getMessage().getBytes());
+               String errorMsg = "Some error occured in generating the image";
+                return ResponseEntity.status(500).contentType(MediaType.APPLICATION_JSON)
+                        .body(Map.of("error",errorMsg));
 
             }
 
         catch(IllegalArgumentException e)
         {
-            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body(e.getMessage().getBytes());
+
+            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON)
+                    .body(Map.of("error",e.getMessage()));//return json data containing the error
         }
 
 
